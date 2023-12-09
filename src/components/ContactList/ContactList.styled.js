@@ -12,8 +12,8 @@ export const StyledItem = styled.li`
 export const StyledButton = styled.button`
   font-weight: bold;
   letter-spacing: 0.1em;
-  border: none;
   border-radius: 1.1em;
+  border: none;
   background-color: rgba(17, 24, 39, 1);
   color: rgba(156, 163, 175, 1);
   padding: 1em 2em;
