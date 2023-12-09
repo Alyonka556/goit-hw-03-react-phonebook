@@ -5,17 +5,25 @@ import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
 import { StyledContainer, StyledTitle } from './App.styled';
+
 export class App extends React.Component {
-  // loginInputId = nanoid();
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem('contacts');
+    if (savedContacts) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleChange = value => {
     this.setState({ filter: value });
@@ -34,18 +42,16 @@ export class App extends React.Component {
         }));
   };
 
-  handleDelete = e => {
+  handleDelete = id => {
     this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== e),
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
   };
 
   getFilteredContacts = () => {
-    const filterContactsList = this.state.contacts.filter(contact => {
-      return contact.name
-        .toLowerCase()
-        .includes(this.state.filter.toLowerCase());
-    });
+    const filterContactsList = this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+    );
 
     return filterContactsList;
   };
@@ -53,12 +59,12 @@ export class App extends React.Component {
   render() {
     const { filter } = this.state;
     const contacts = this.getFilteredContacts();
-    // const { name, id, number } = this.state;
+
     return (
       <StyledContainer>
         <StyledTitle>Phonebook</StyledTitle>
         <ContactForm handleSubmit={this.handleSubmit} />
-        <StyledTitle> Contacts</StyledTitle>
+        <StyledTitle>Contacts</StyledTitle>
         <Filter filter={filter} handleChange={this.handleChange} />
         <ContactList contacts={contacts} handleDelete={this.handleDelete} />
       </StyledContainer>
